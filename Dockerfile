@@ -8,7 +8,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # ps needs to be available to be able to be used in docker.inside, see https://issues.jenkins-ci.org/browse/JENKINS-40101
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends jq procps gawk xargs && \
+    apt-get install -y --no-install-recommends jq procps gawk && \
     rm -rf /var/lib/apt/lists/*
 
 # add group & user
