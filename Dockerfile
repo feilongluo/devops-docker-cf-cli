@@ -41,7 +41,7 @@ RUN if [ "$RUN" = "1" ] ; then \
         cf api ${API} && \
         cf login -u ${U} -p ${P} && \
         cf apps | awk -F ' ' 'NR < 4 {next} {if ($2 != "started") print $1}' | xargs -L 1 --max-procs 0 -r ${CF_CLI} restart; \
-        echo '所有工作正常完成，所有已停止的实例重启成功';
+        echo '所有工作正常完成，所有已停止的实例重启成功'; \
     else \
         echo '构建过程将忽略执行命令'; \
     fi
