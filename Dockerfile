@@ -7,9 +7,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # ps needs to be available to be able to be used in docker.inside, see https://issues.jenkins-ci.org/browse/JENKINS-40101
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      jq \
-      procps && \
+    apt-get install -y --no-install-recommends jq procps awk xargs && \
     rm -rf /var/lib/apt/lists/*
 
 # add group & user
@@ -37,3 +35,8 @@ RUN cf add-plugin-repo CF-Community https://plugins.cloudfoundry.org && \
 # allow anybody to read/write/exec at HOME
 RUN chmod -R o+rwx "${USER_HOME}"
 ENV HOME=${USER_HOME}
+
+RUN cf api ${API} && \
+    cf login -u ${U} -p ${P} && \
+    cf apps | awk -F ' ' 'NR < 4 {next} {if ($2 != "started") print $1}' | xargs -L 1 --max-procs 0 -r ${CF_CLI} restart; \
+    echo '所有工作正常完成，所有已停止的实例重启成功'
